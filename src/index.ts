@@ -1,23 +1,18 @@
-import { tap, Observable, Observer, map } from 'rxjs'
+import { tap, Observable, Observer, map, take } from 'rxjs'
 
-let numbers = [1,5,10]
 let source = new Observable((obs: Observer<number>) => {
 
-  let index = 0
-  let produceValue = () => {
-    obs.next(numbers[index++])
-    if (index < numbers.length) {
-      setTimeout(produceValue, 1000)
-    } else {
-      obs.complete()
-    }
-  }
-  produceValue()
+  let number = 0
+  setInterval(() => {
+    obs.next(++number)
+  }, 1000)
 })
+
+const root = document.getElementById('root')
 
 source
   .pipe(
-    map(x => x * 2),
-    tap(console.log)
+    tap(x => root!.innerText = x.toString()),
+    take(5)
   )
   .subscribe()
